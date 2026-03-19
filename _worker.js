@@ -20,9 +20,9 @@ export default {
   async fetch(request, env) {
     const url = new URL(request.url);
 
-    // ── Serve static assets for everything except /api/verdict ──
+    // ── Only handle /api/verdict — ignore all other paths ──────
     if (url.pathname !== '/api/verdict') {
-      return env.ASSETS.fetch(request);
+      return new Response('OK', { status: 200 });
     }
 
     // ── CORS preflight ───────────────────────────────────────────
@@ -104,7 +104,7 @@ Rules:
           'anthropic-version': '2023-06-01',
         },
         body: JSON.stringify({
-          model:      'claude-sonnet-4-20250514',
+          model:      'claude-sonnet-4-5',
           max_tokens: 1200,
           messages:   [{ role: 'user', content: prompt }],
         }),
