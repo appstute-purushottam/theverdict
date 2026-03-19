@@ -1,2 +1,7 @@
 name = "theverdict"
-pages_build_output_dir = "."
+main = "_worker.js"
+compatibility_date = "2025-03-19"
+
+[assets]
+directory = "."
+not_found_handling = "single-page-application"
