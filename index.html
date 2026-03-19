@@ -280,7 +280,7 @@
 
 
       <!-- ═══ Ad: Top Leaderboard (728x90 desktop / responsive) ═══ -->
-      <div class="ad-unit ad-top">
+      <!-- <div class="ad-unit ad-top">
         <p class="ad-label">Advertisement</p>
         <ins class="adsbygoogle"
              style="display:block"
@@ -289,7 +289,7 @@
              data-ad-format="auto"
              data-full-width-responsive="true"></ins>
         <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-      </div>
+      </div> -->
 
       <div class="card">
 
@@ -323,6 +323,15 @@
             aria-label="Describe factors, priorities, and context that matter to this decision"></textarea>
           <p class="hint">Your priorities, constraints, goals, budget, timeline, gut feelings — anything that matters.</p>
         </div>
+
+          <!-- Social Sharing Buttons (hidden until verdict shown) -->
+          <div id="share-row" style="display:none; margin: 18px 0 0 0; text-align:center;">
+            <span style="font-size:11px; color:var(--muted); margin-right:8px;">Share your verdict:</span>
+            <button class="share-btn" id="share-twitter" title="Share on Twitter" aria-label="Share on Twitter">🐦</button>
+            <button class="share-btn" id="share-linkedin" title="Share on LinkedIn" aria-label="Share on LinkedIn">💼</button>
+            <button class="share-btn" id="share-facebook" title="Share on Facebook" aria-label="Share on Facebook">📘</button>
+            <button class="share-btn" id="share-copy" title="Copy link" aria-label="Copy link">🔗</button>
+          </div>
 
         <p class="error-msg" id="error" role="alert" aria-live="polite"></p>
         <button id="decide" aria-label="Get AI verdict on my options">Get the verdict</button>
@@ -443,6 +452,12 @@
 
     </section>
 
+      <!-- Public Verdict Gallery Placeholder -->
+      <section id="gallery-section" style="margin:48px auto 0; max-width:600px;">
+        <h2 style="font-size:1.3rem; font-family:'Playfair Display',serif; margin-bottom:12px;">Recent Public Verdicts</h2>
+        <div id="gallery-list" style="min-height:60px; color:var(--muted); font-size:13px;">Coming soon: Browse real, anonymized verdicts shared by users.</div>
+      </section>
+
 
     <!-- ═══ Ad: Bottom Banner (responsive) ═══ -->
     <div class="ad-unit ad-bottom">
@@ -486,6 +501,15 @@ const aiPanel     = document.getElementById('ai-panel');
 const thinkBox    = document.getElementById('thinking-box');
 const resultPanel = document.getElementById('result-panel');
 const steps       = [1,2,3,4].map(i => document.getElementById(`step-${i}`));
+
+// Social sharing buttons
+const shareRow = document.getElementById('share-row');
+const shareBtns = {
+  twitter: document.getElementById('share-twitter'),
+  linkedin: document.getElementById('share-linkedin'),
+  facebook: document.getElementById('share-facebook'),
+  copy: document.getElementById('share-copy')
+};
 
 // ── Thinking step animator ───────────────────────────────────
 const stepIcons = ['📋','⚖️','🔍','✦'];
@@ -579,6 +603,19 @@ function renderResult(data, options) {
 
   // Caveat
   document.getElementById('text-caveat').textContent = data.caveat ?? '';
+
+  // Show sharing row and set up share links
+  shareRow.style.display = 'block';
+  const shareText = encodeURIComponent(`My AI-powered verdict: "${data.verdict}" — ${data.reasoning}`);
+  const shareUrl = encodeURIComponent(window.location.origin + window.location.pathname + '#verdict');
+  shareBtns.twitter.onclick = () => window.open(`https://twitter.com/intent/tweet?text=${shareText}&url=${shareUrl}`,'_blank');
+  shareBtns.linkedin.onclick = () => window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${shareUrl}`,'_blank');
+  shareBtns.facebook.onclick = () => window.open(`https://www.facebook.com/sharer/sharer.php?u=${shareUrl}`,'_blank');
+  shareBtns.copy.onclick = () => {
+    navigator.clipboard.writeText(window.location.origin + window.location.pathname + '#verdict');
+    shareBtns.copy.textContent = '✅';
+    setTimeout(()=>{ shareBtns.copy.textContent = '🔗'; }, 1200);
+  };
 }
 
 // ── Call Worker (secure Anthropic proxy) ─────────────────────
@@ -662,6 +699,9 @@ function reset() {
   const errBox = document.getElementById('ai-error-box');
   if (errBox) errBox.style.display = 'none';
   qInput.focus();
+
+  // Hide sharing row
+  shareRow.style.display = 'none';
 }
 
 btn.addEventListener('click', decide);
