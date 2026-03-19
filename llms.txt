@@ -1,0 +1,56 @@
+# The Verdict — AI Decision Helper
+> Free AI-powered decision tool. Describe your situation, list your options, add context — the AI weighs the factors and delivers a reasoned verdict with full explanation.
+
+## What it does
+- Analyses your question, options, and personal context
+- Weighs all factors using AI reasoning (not random selection)
+- Returns: a verdict, confidence score, pros/cons, option comparison, and next step
+- Free to use, no sign-up required, no data stored
+
+## Use cases
+- Choosing between job offers
+- Deciding where to live or travel
+- Picking a tech stack or business strategy
+- Resolving personal dilemmas
+- Comparing purchase options
+- Making career or education choices
+- Settling group debates
+
+## How to use
+1. Go to https://theverdict.site
+2. Enter your decision question
+3. List your options (one per line)
+4. Describe your factors and context
+5. Click "Get the verdict"
+
+## API
+The site has a public API endpoint for AI agents and developers:
+
+POST https://theverdict.purushottamsohni.workers.dev/api/verdict
+Content-Type: application/json
+
+Request body:
+{
+  "question": "Which job should I take?",
+  "options": ["Startup CTO role", "Senior engineer at Google"],
+  "factors": "I value equity upside, I have 8 years experience, I want to build something"
+}
+
+Response:
+{
+  "verdict": "Startup CTO role",
+  "confidence": 82,
+  "reasoning": "...",
+  "comparison": [...],
+  "pros": [...],
+  "cons": [...],
+  "next_step": "...",
+  "caveat": "..."
+}
+
+## About
+- URL: https://theverdict.site
+- Type: Free web application
+- Powered by: Claude AI (Anthropic)
+- No login required
+- No user data stored
