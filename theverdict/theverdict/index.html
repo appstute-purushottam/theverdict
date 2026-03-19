@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+
+<!-- ═══ Google AdSense ═══ -->
+<!-- Replace ca-pub-XXXXXXXXXXXXXXXX with your AdSense Publisher ID -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+<title>The Verdict — AI Decision Helper That Reasons Through Your Options</title>
+<meta name="description" content="Describe your situation, list your options, and The Verdict's AI analyses the factors to give you a reasoned, personalised decision. Free. No sign-up."/>
+<meta name="keywords" content="AI decision helper, decision maker tool, AI choice advisor, best option picker, decision analysis, personalised decision tool, smart decision helper"/>
+<link rel="canonical" href="https://theverdict.site/"/>
+<meta name="robots" content="index, follow"/>
+<meta name="author" content="TheVerdict.site"/>
+<meta property="og:type" content="website"/>
+<meta property="og:url" content="https://theverdict.site/"/>
+<meta property="og:title" content="The Verdict — AI Decision Helper"/>
+<meta property="og:description" content="Tell the AI your situation and options. It analyses the factors and delivers a clear, reasoned verdict."/>
+<meta property="og:image" content="https://theverdict.site/og-image.png"/>
+<meta property="og:site_name" content="The Verdict"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="The Verdict — AI Decision Helper"/>
+<meta name="twitter:description" content="No random picks. The AI reads your situation and options, weighs the factors, and delivers a confident reasoned verdict."/>
+
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"The Verdict — AI Decision Helper","url":"https://theverdict.site/","description":"An AI-powered decision helper that analyses your situation, weighs the factors, and delivers a reasoned verdict — not a random pick.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"featureList":["AI-reasoned verdict","Factor-based analysis","Pros and cons breakdown","No random selection","Free to use","No account required"]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How does The Verdict make a decision?","acceptedAnswer":{"@type":"Answer","text":"The Verdict uses an AI agent that reads your question, your options, and the factors or context you provide. It then weighs all the information and derives a reasoned verdict — the best option based on your specific situation, not a random pick."}},{"@type":"Question","name":"Is it really AI-powered or just random?","acceptedAnswer":{"@type":"Answer","text":"It is genuinely AI-powered. The AI analyses your specific context, compares all options against the factors you care about, and delivers a justified recommendation with full reasoning."}},{"@type":"Question","name":"What factors should I enter?","acceptedAnswer":{"@type":"Answer","text":"You can enter anything relevant to your decision — budget, time, personal preferences, constraints, goals, mood, or any other context. The more context you provide, the more personalised the verdict."}},{"@type":"Question","name":"Is The Verdict free?","acceptedAnswer":{"@type":"Answer","text":"Yes, completely free. No sign-up, no subscription required."}}]}</script>
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink:       #1a1410;
+    --paper:     #f5f0e8;
+    --cream:     #ede6d6;
+    --accent:    #c0392b;
+    --muted:     #9e8f7d;
+    --line:      rgba(26,20,16,.14);
+    --ai-bg:     #0f1a0f;
+    --ai-border: rgba(92,184,92,.2);
+    --ai-fg:     #cde8cd;
+    --ai-green:  #5cb85c;
+    --ai-dim:    rgba(205,232,205,.5);
+  }
+
+  html, body { min-height: 100%; background: var(--paper); color: var(--ink); font-family: 'DM Mono', monospace; overflow-x: hidden; }
+
+  body::before {
+    content: ''; position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='.045'/%3E%3C/svg%3E");
+  }
+  body::after {
+    content: ''; position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background-image: repeating-linear-gradient(transparent 0px, transparent 31px, var(--line) 31px, var(--line) 32px);
+  }
+
+  .wrap { position: relative; z-index: 1; min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 60px 24px 80px; }
+
+  /* ── header ── */
+  header { text-align: center; margin-bottom: 52px; }
+  .eyebrow { font-size: 10px; font-weight: 500; letter-spacing: .26em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
+  h1 { font-family: 'Playfair Display', serif; font-size: clamp(2.4rem, 6vw, 4rem); font-weight: 700; line-height: 1.1; letter-spacing: -.02em; }
+  h1 em { font-style: italic; color: var(--accent); }
+  .subtitle { margin-top: 14px; font-size: 12px; color: var(--muted); letter-spacing: .05em; line-height: 1.7; }
+  .subtitle strong { color: var(--ink); }
+
+  /* ── how it works pills ── */
+  .how { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-top: 20px; }
+  .pill { font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); border: 1px solid var(--line); border-radius: 20px; padding: 5px 12px; display: flex; align-items: center; gap: 6px; }
+  .pill span { font-size: 12px; }
+
+  /* ── card ── */
+  .card { background: var(--cream); border: 1.5px solid rgba(26,20,16,.17); border-radius: 3px; padding: 40px 44px; width: 100%; max-width: 580px; box-shadow: 6px 6px 0 rgba(26,20,16,.07); }
+
+  .field { margin-bottom: 26px; }
+  .field:last-of-type { margin-bottom: 0; }
+  label { display: block; font-size: 10px; font-weight: 500; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+  .label-row { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 8px; }
+  .label-row label { margin-bottom: 0; }
+  .label-note { font-size: 9px; color: var(--muted); opacity: .7; letter-spacing: .06em; }
+
+  input[type="text"], textarea {
+    width: 100%; background: var(--paper);
+    border: 1.5px solid rgba(26,20,16,.18); border-radius: 2px;
+    padding: 12px 14px; font-family: 'DM Mono', monospace;
+    font-size: 13px; color: var(--ink); outline: none;
+    transition: border-color .2s; resize: vertical;
+  }
+  input[type="text"]:focus, textarea:focus { border-color: var(--accent); }
+  textarea { min-height: 100px; }
+  textarea#factors { min-height: 80px; }
+  .hint { margin-top: 6px; font-size: 10px; color: var(--muted); letter-spacing: .03em; line-height: 1.6; }
+
+  .divider { height: 1px; background: var(--line); margin: 28px 0; }
+
+  /* ── button ── */
+  button#decide {
+    display: block; width: 100%; background: var(--ink); color: var(--paper);
+    border: none; border-radius: 2px; padding: 16px 20px;
+    font-family: 'DM Mono', monospace; font-size: 12px; font-weight: 500;
+    letter-spacing: .18em; text-transform: uppercase; cursor: pointer;
+    position: relative; overflow: hidden; transition: background .2s, transform .08s;
+    margin-top: 28px;
+  }
+  button#decide:active { transform: translateY(1px); }
+  button#decide:hover:not(:disabled) { background: #2d2520; }
+  button#decide:disabled { opacity: .4; cursor: not-allowed; }
+  button#decide::after { content: ''; position: absolute; top: 0; left: -100%; width: 60%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,.11), transparent); transition: left .45s ease; }
+  button#decide.shimmer::after { left: 160%; }
+
+  .error-msg { font-size: 11px; color: var(--accent); letter-spacing: .06em; margin-top: 12px; min-height: 16px; }
+
+  /* ── AI thinking panel (full-width) ── */
+  #ai-panel {
+    width: 100%; max-width: 580px; margin-top: 24px;
+    opacity: 0; transform: translateY(14px);
+    transition: opacity .5s ease, transform .5s ease;
+    pointer-events: none;
+  }
+  #ai-panel.visible { opacity: 1; transform: translateY(0); pointer-events: auto; }
+
+  /* ── Thinking phase ── */
+  .thinking-box {
+    background: var(--ai-bg); border: 1px solid var(--ai-border);
+    border-radius: 3px; padding: 24px 28px;
+    display: flex; flex-direction: column; gap: 16px;
+  }
+  .thinking-header { display: flex; align-items: center; gap: 10px; }
+  .thinking-header .icon { font-size: 14px; }
+  .thinking-header .label { font-size: 10px; letter-spacing: .2em; text-transform: uppercase; color: var(--ai-green); }
+  .thinking-steps { display: flex; flex-direction: column; gap: 8px; }
+  .t-step { display: flex; align-items: center; gap: 10px; font-size: 11px; color: var(--ai-dim); letter-spacing: .06em; transition: color .3s; }
+  .t-step.active { color: var(--ai-fg); }
+  .t-step.done { color: rgba(92,184,92,.7); }
+  .t-step .t-icon { font-size: 12px; width: 16px; text-align: center; }
+  .t-step .t-spinner { width: 10px; height: 10px; border: 1.5px solid rgba(92,184,92,.3); border-top-color: var(--ai-green); border-radius: 50%; animation: spin .7s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── Result panel ── */
+  #result-panel { display: none; flex-direction: column; gap: 0; }
+
+  /* verdict header */
+  .verdict-header {
+    background: var(--ink); color: var(--paper);
+    border-radius: 3px 3px 0 0; padding: 28px 32px 24px;
+    position: relative; overflow: hidden;
+  }
+  .verdict-header::before {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(192,57,43,.15) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .verdict-eyebrow { font-size: 9px; letter-spacing: .28em; text-transform: uppercase; color: rgba(255,255,255,.45); margin-bottom: 10px; }
+  .verdict-choice {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 5vw, 2.6rem);
+    font-weight: 700; font-style: italic; line-height: 1.2;
+    position: relative; z-index: 1;
+  }
+  .verdict-confidence {
+    margin-top: 10px; font-size: 10px; letter-spacing: .1em;
+    color: rgba(255,255,255,.5); display: flex; align-items: center; gap: 8px;
+  }
+  .conf-bar { height: 3px; border-radius: 2px; background: rgba(255,255,255,.12); flex: 1; max-width: 120px; overflow: hidden; }
+  .conf-fill { height: 100%; background: var(--ai-green); border-radius: 2px; transition: width 1s ease .3s; }
+
+  /* reasoning body */
+  .reasoning-body {
+    background: var(--ai-bg); border: 1px solid var(--ai-border);
+    border-top: none; border-radius: 0 0 3px 3px;
+    padding: 0;
+  }
+
+  /* sections */
+  .r-section { padding: 22px 28px; border-bottom: 1px solid rgba(92,184,92,.1); }
+  .r-section:last-child { border-bottom: none; }
+  .r-section-head { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+  .r-section-icon { font-size: 14px; }
+  .r-section-title { font-size: 10px; font-weight: 500; letter-spacing: .2em; text-transform: uppercase; color: var(--ai-green); }
+  .r-section-body { font-size: 13px; line-height: 1.85; color: var(--ai-fg); }
+  .r-section-body p { opacity: .88; margin-bottom: 8px; }
+  .r-section-body p:last-child { margin-bottom: 0; }
+
+  /* comparison table */
+  .cmp-table { width: 100%; border-collapse: collapse; margin-top: 4px; }
+  .cmp-table th { font-size: 9px; letter-spacing: .18em; text-transform: uppercase; color: var(--ai-dim); padding: 6px 10px 8px; text-align: left; border-bottom: 1px solid rgba(92,184,92,.12); }
+  .cmp-table td { font-size: 12px; color: var(--ai-fg); padding: 9px 10px; border-bottom: 1px solid rgba(92,184,92,.06); vertical-align: top; line-height: 1.5; }
+  .cmp-table tr:last-child td { border-bottom: none; }
+  .cmp-table tr.winner td { background: rgba(92,184,92,.06); }
+  .cmp-table tr.winner td:first-child { border-left: 2px solid var(--ai-green); padding-left: 8px; }
+  .cmp-table .opt-name { font-weight: 500; white-space: nowrap; }
+  .badge { display: inline-block; font-size: 9px; letter-spacing: .1em; text-transform: uppercase; padding: 2px 7px; border-radius: 10px; margin-left: 6px; vertical-align: middle; }
+  .badge.best { background: rgba(92,184,92,.2); color: var(--ai-green); }
+  .badge.ok   { background: rgba(255,255,255,.06); color: rgba(205,232,205,.5); }
+
+  /* pros/cons list */
+  .pc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .pc-col-head { font-size: 9px; letter-spacing: .16em; text-transform: uppercase; margin-bottom: 8px; }
+  .pc-col-head.pros { color: var(--ai-green); }
+  .pc-col-head.cons { color: rgba(192,57,43,.8); }
+  .pc-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+  .pc-list li { font-size: 12px; color: var(--ai-fg); opacity: .85; padding-left: 16px; position: relative; line-height: 1.5; }
+  .pc-list.pro-list li::before { content: '+'; position: absolute; left: 0; color: var(--ai-green); font-weight: 700; }
+  .pc-list.con-list li::before { content: '−'; position: absolute; left: 0; color: rgba(192,57,43,.8); font-weight: 700; }
+
+  /* next step */
+  .next-step-box { background: rgba(92,184,92,.07); border-left: 2px solid var(--ai-green); padding: 12px 16px; border-radius: 0 2px 2px 0; font-size: 13px; color: #fff; line-height: 1.7; }
+
+  /* caveat */
+  .caveat { font-size: 11px; color: var(--ai-dim); font-style: italic; opacity: .7; }
+
+  /* stream cursor */
+  .stream-cursor { display: inline-block; width: 2px; height: 13px; background: var(--ai-green); margin-left: 2px; vertical-align: middle; animation: blink .65s step-end infinite; }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  /* roll animation */
+  @keyframes drop-in { 0%{opacity:0;transform:translateY(-10px)} 100%{opacity:1;transform:translateY(0)} }
+  .drop-in { animation: drop-in .5s cubic-bezier(.22,1,.36,1) both; }
+
+  /* reconsider */
+  #reconsider { display: none; margin-top: 18px; background: none; border: none; font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); cursor: pointer; text-decoration: underline; text-underline-offset: 3px; padding: 0; transition: color .2s; }
+  #reconsider:hover { color: var(--ink); }
+  #reconsider.show { display: inline-block; }
+
+  /* footer */
+  footer { position: relative; z-index: 1; margin-top: auto; padding-top: 56px; font-size: 10px; color: var(--muted); letter-spacing: .08em; text-align: center; }
+  footer address { font-style: normal; margin-bottom: 4px; }
+
+  /* seo */
+  .seo-content { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+
+
+  /* ── Ad units ─────────────────────────────────────────────── */
+  .ad-unit {
+    width: 100%; max-width: 580px;
+    margin: 0 auto;
+    text-align: center;
+    overflow: hidden;
+  }
+  .ad-unit ins { display: block; }
+  .ad-label {
+    font-size: 9px; letter-spacing: .18em; text-transform: uppercase;
+    color: var(--muted); opacity: .5; margin-bottom: 6px;
+    text-align: center;
+  }
+  /* top leaderboard — shown always */
+  .ad-top { margin-bottom: 32px; }
+  /* mid ad — shown between card and AI panel */
+  .ad-mid { margin: 24px 0; }
+  /* bottom ad — shown after verdict */
+  .ad-bottom { margin-top: 32px; }
+
+  @media (max-width: 600px) {
+    .card { padding: 28px 20px; }
+    .pc-grid { grid-template-columns: 1fr; }
+    .reasoning-body .r-section { padding: 18px 20px; }
+    .verdict-header { padding: 22px 20px 18px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header role="banner">
+    <p class="eyebrow">intelligent decision analysis</p>
+    <h1>The <em>Verdict</em></h1>
+    <p class="subtitle">Describe your situation. List your options.<br><strong>The AI weighs the factors and decides.</strong></p>
+    <div class="how">
+      <div class="pill"><span>📝</span> your context</div>
+      <div class="pill"><span>⚖️</span> AI weighs factors</div>
+      <div class="pill"><span>✦</span> clear verdict</div>
+    </div>
+  </header>
+
+  <main role="main" aria-label="AI Decision Helper">
+    <section itemscope itemtype="https://schema.org/Action">
+
+
+      <!-- ═══ Ad: Top Leaderboard (728x90 desktop / responsive) ═══ -->
+      <div class="ad-unit ad-top">
+        <p class="ad-label">Advertisement</p>
+        <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+             data-ad-slot="1111111111"
+             data-ad-format="auto"
+             data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+      </div>
+
+      <div class="card">
+
+        <div class="field">
+          <label for="question">What's the decision?</label>
+          <input type="text" id="question" name="question"
+            placeholder="e.g. Which job offer should I accept?"
+            autocomplete="off" itemprop="name"
+            aria-label="Describe the decision you need to make"/>
+        </div>
+
+        <div class="field">
+          <div class="label-row">
+            <label for="options">Your options</label>
+            <span class="label-note">one per line</span>
+          </div>
+          <textarea id="options" name="options"
+            placeholder="Option A — Senior role at startup&#10;Option B — Stable role at big tech&#10;Option C — Go freelance"
+            aria-label="List your options, one per line" itemprop="object"></textarea>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="field">
+          <div class="label-row">
+            <label for="factors">Factors &amp; context</label>
+            <span class="label-note">the more detail, the sharper the verdict</span>
+          </div>
+          <textarea id="factors" name="factors"
+            placeholder="e.g. I value work-life balance. I have a mortgage. I want to grow technically. The startup pays 20% more but has less stability. I have 5 years of experience."
+            aria-label="Describe factors, priorities, and context that matter to this decision"></textarea>
+          <p class="hint">Your priorities, constraints, goals, budget, timeline, gut feelings — anything that matters.</p>
+        </div>
+
+        <p class="error-msg" id="error" role="alert" aria-live="polite"></p>
+        <button id="decide" aria-label="Get AI verdict on my options">Get the verdict</button>
+      </div>
+
+
+      <!-- ═══ Ad: Mid Rectangle (300x250) — shown after verdict ═══ -->
+      <div class="ad-unit ad-mid" id="ad-mid" style="display:none">
+        <p class="ad-label">Advertisement</p>
+        <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+             data-ad-slot="2222222222"
+             data-ad-format="rectangle"
+             data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+      </div>
+
+      <!-- AI Panel -->
+      <div id="ai-panel" aria-live="polite" aria-label="AI decision analysis">
+
+        <!-- Thinking phase -->
+        <div id="thinking-box" class="thinking-box">
+          <div class="thinking-header">
+            <span class="icon">🧠</span>
+            <span class="label">AI is deliberating</span>
+          </div>
+          <div class="thinking-steps">
+            <div class="t-step" id="step-1"><span class="t-icon">📋</span> Reading your question and options…</div>
+            <div class="t-step" id="step-2"><span class="t-icon">⚖️</span> Weighing factors and context…</div>
+            <div class="t-step" id="step-3"><span class="t-icon">🔍</span> Comparing options against your priorities…</div>
+            <div class="t-step" id="step-4"><span class="t-icon">✦</span> Forming a verdict…</div>
+          </div>
+        </div>
+
+        <!-- Result phase -->
+        <div id="result-panel">
+
+          <!-- Verdict header -->
+          <div class="verdict-header drop-in" id="verdict-header">
+            <p class="verdict-eyebrow">The AI verdict</p>
+            <div class="verdict-choice" id="verdict-choice"></div>
+            <div class="verdict-confidence">
+              <span id="conf-label"></span>
+              <div class="conf-bar"><div class="conf-fill" id="conf-fill" style="width:0%"></div></div>
+            </div>
+          </div>
+
+          <!-- Reasoning body -->
+          <div class="reasoning-body">
+
+            <!-- Summary reasoning -->
+            <div class="r-section" id="sec-reasoning">
+              <div class="r-section-head">
+                <span class="r-section-icon">💡</span>
+                <span class="r-section-title">Why this verdict</span>
+              </div>
+              <div class="r-section-body" id="text-reasoning"></div>
+            </div>
+
+            <!-- Option comparison -->
+            <div class="r-section" id="sec-comparison">
+              <div class="r-section-head">
+                <span class="r-section-icon">📊</span>
+                <span class="r-section-title">Options compared</span>
+              </div>
+              <div class="r-section-body">
+                <table class="cmp-table" id="cmp-table">
+                  <thead><tr><th>Option</th><th>Fit for your situation</th></tr></thead>
+                  <tbody id="cmp-body"></tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Pros / cons of chosen -->
+            <div class="r-section" id="sec-proscons">
+              <div class="r-section-head">
+                <span class="r-section-icon">⚖️</span>
+                <span class="r-section-title">Honest assessment</span>
+              </div>
+              <div class="r-section-body">
+                <div class="pc-grid">
+                  <div>
+                    <p class="pc-col-head pros">Strengths</p>
+                    <ul class="pc-list pro-list" id="pros-list"></ul>
+                  </div>
+                  <div>
+                    <p class="pc-col-head cons">Watch-outs</p>
+                    <ul class="pc-list con-list" id="cons-list"></ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Next step -->
+            <div class="r-section" id="sec-next">
+              <div class="r-section-head">
+                <span class="r-section-icon">🚀</span>
+                <span class="r-section-title">Your next step</span>
+              </div>
+              <div class="r-section-body">
+                <div class="next-step-box" id="text-next"></div>
+              </div>
+            </div>
+
+            <!-- Caveat -->
+            <div class="r-section" id="sec-caveat">
+              <div class="r-section-body">
+                <p class="caveat" id="text-caveat"></p>
+              </div>
+            </div>
+
+          </div><!-- /reasoning-body -->
+        </div><!-- /result-panel -->
+      </div><!-- /ai-panel -->
+
+      <button id="reconsider" aria-label="Start a new decision">Reconsider →</button>
+
+    </section>
+
+
+    <!-- ═══ Ad: Bottom Banner (responsive) ═══ -->
+    <div class="ad-unit ad-bottom">
+      <p class="ad-label">Advertisement</p>
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+           data-ad-slot="3333333333"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+
+    <aside class="seo-content" aria-label="About The Verdict">
+      <h2>AI Decision Helper — Reasoned Verdicts, Not Random Picks</h2>
+      <p>The Verdict is a free AI decision-making tool. Unlike random pickers, it reads your situation, options, and the factors you care about — then uses an AI agent to weigh everything and deliver a justified, personalised verdict.</p>
+      <h3>Use cases</h3>
+      <ul>
+        <li>Choosing between job offers</li><li>Deciding where to live or travel</li>
+        <li>Picking a tech stack or business strategy</li><li>Resolving personal dilemmas</li>
+        <li>Comparing purchase options</li><li>Making career or education choices</li>
+      </ul>
+    </aside>
+  </main>
+
+  <footer role="contentinfo">
+    <address><span>theverdict.site</span></address>
+    <p>AI-reasoned &nbsp;·&nbsp; not random &nbsp;·&nbsp; no data stored</p>
+  </footer>
+</div>
+
+<script>
+// ── DOM ──────────────────────────────────────────────────────
+const btn         = document.getElementById('decide');
+const reconsider  = document.getElementById('reconsider');
+const errMsg      = document.getElementById('error');
+const qInput      = document.getElementById('question');
+const oInput      = document.getElementById('options');
+const fInput      = document.getElementById('factors');
+const aiPanel     = document.getElementById('ai-panel');
+const thinkBox    = document.getElementById('thinking-box');
+const resultPanel = document.getElementById('result-panel');
+const steps       = [1,2,3,4].map(i => document.getElementById(`step-${i}`));
+
+// ── Thinking step animator ───────────────────────────────────
+const stepIcons = ['📋','⚖️','🔍','✦'];
+
+function animateSteps() {
+  // Fully reset all steps (restore icon spans in case of re-run)
+  steps.forEach((s, idx) => {
+    s.className = 't-step';
+    const old = s.querySelector('.t-spinner, .t-icon');
+    if (old) {
+      const icon = document.createElement('span');
+      icon.className = 't-icon';
+      icon.textContent = stepIcons[idx];
+      old.replaceWith(icon);
+    }
+  });
+
+  return new Promise(resolve => {
+    let i = 0;
+    let currentSpinner = null;
+
+    function next() {
+      // Complete the previous step
+      if (i > 0 && currentSpinner && currentSpinner.parentNode) {
+        const doneIcon = document.createElement('span');
+        doneIcon.className = 't-icon';
+        doneIcon.textContent = '✓';
+        currentSpinner.replaceWith(doneIcon);
+        currentSpinner = null;
+        steps[i - 1].className = 't-step done';
+      }
+      if (i >= steps.length) { resolve(); return; }
+
+      // Activate current step
+      steps[i].className = 't-step active';
+      const orig = steps[i].querySelector('.t-icon');
+      const spinner = document.createElement('div');
+      spinner.className = 't-spinner';
+      if (orig) orig.replaceWith(spinner);
+      currentSpinner = spinner;
+      i++;
+      setTimeout(next, 900 + Math.random() * 400);
+    }
+    next();
+  });
+}
+
+// ── Escape HTML ──────────────────────────────────────────────
+const esc = s => String(s ?? '')
+  .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+// ── Render structured result ─────────────────────────────────
+function renderResult(data, options) {
+  // Verdict
+  document.getElementById('verdict-choice').textContent = data.verdict ?? '';
+
+  // Confidence
+  const conf = Math.min(100, Math.max(10, parseInt(data.confidence) || 75));
+  document.getElementById('conf-label').textContent = `${conf}% confidence`;
+  setTimeout(() => {
+    document.getElementById('conf-fill').style.width = conf + '%';
+  }, 100);
+
+  // Reasoning
+  document.getElementById('text-reasoning').innerHTML =
+    `<p>${esc(data.reasoning)}</p>`;
+
+  // Comparison table
+  const tbody = document.getElementById('cmp-body');
+  tbody.innerHTML = '';
+  const rows = data.comparison ?? [];
+  rows.forEach(row => {
+    const isWinner = (row.option ?? '').trim().toLowerCase() ===
+                     (data.verdict ?? '').trim().toLowerCase();
+    const tr = document.createElement('tr');
+    if (isWinner) tr.className = 'winner';
+    tr.innerHTML = `
+      <td class="opt-name">${esc(row.option)}${isWinner ? '<span class="badge best">verdict</span>' : '<span class="badge ok">—</span>'}</td>
+      <td>${esc(row.assessment)}</td>`;
+    tbody.appendChild(tr);
+  });
+
+  // Pros / cons
+  const prosList = document.getElementById('pros-list');
+  const consList = document.getElementById('cons-list');
+  prosList.innerHTML = (data.pros ?? []).map(p => `<li>${esc(p)}</li>`).join('');
+  consList.innerHTML = (data.cons ?? []).map(c => `<li>${esc(c)}</li>`).join('');
+
+  // Next step
+  document.getElementById('text-next').textContent = data.next_step ?? '';
+
+  // Caveat
+  document.getElementById('text-caveat').textContent = data.caveat ?? '';
+}
+
+// ── Call Worker (secure Anthropic proxy) ─────────────────────
+// Replace this URL with your deployed Cloudflare Worker URL
+const WORKER_URL = '/api/verdict'; // Pages Function — no domain needed
+
+async function getVerdict(question, options, factors) {
+  const response = await fetch(WORKER_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ question, options, factors })
+  });
+
+  if (!response.ok) {
+    const err = await response.json().catch(() => ({}));
+    throw new Error(err.error ?? `Worker error ${response.status}`);
+  }
+  return await response.json();
+}
+
+// ── Main flow ────────────────────────────────────────────────
+async function decide() {
+  errMsg.textContent = '';
+  const opts = oInput.value.split('\n').map(s => s.trim()).filter(Boolean);
+  const q    = qInput.value.trim();
+  const f    = fInput.value.trim();
+
+  if (!q) { errMsg.textContent = 'Please describe the decision.'; return; }
+  if (opts.length < 2) { errMsg.textContent = 'Please enter at least two options.'; return; }
+
+  btn.disabled = true;
+  btn.classList.add('shimmer');
+  setTimeout(() => btn.classList.remove('shimmer'), 500);
+
+  // Reset & show panel
+  resultPanel.style.display = 'none';
+  thinkBox.style.display    = 'flex';
+  aiPanel.classList.add('visible');
+
+  // Animate steps in parallel with API call
+  const [data] = await Promise.all([
+    getVerdict(q, opts, f).catch(err => ({ _error: err.message })),
+    animateSteps()
+  ]);
+
+  thinkBox.style.display = 'none';
+
+  // Hide/show error box (separate element — never overwrite result-panel DOM)
+  let errBox = document.getElementById('ai-error-box');
+  if (!errBox) {
+    errBox = document.createElement('div');
+    errBox.id = 'ai-error-box';
+    errBox.style.cssText = 'background:var(--ai-bg);border:1px solid var(--ai-border);border-radius:3px;padding:28px;color:var(--ai-dim);font-size:12px;line-height:1.8;display:none;';
+    aiPanel.appendChild(errBox);
+  }
+
+  if (data._error) {
+    errBox.innerHTML = `<p>The AI couldn't reach a verdict right now.</p><p style="margin-top:8px;opacity:.6;font-size:11px;">${esc(data._error)}</p>`;
+    errBox.style.display = 'block';
+    resultPanel.style.display = 'none';
+  } else {
+    errBox.style.display = 'none';
+    renderResult(data, opts);
+    resultPanel.style.display = 'flex';
+    resultPanel.style.flexDirection = 'column';
+  }
+
+  // Show mid ad when verdict is revealed
+  const adMid = document.getElementById('ad-mid');
+  if (adMid) adMid.style.display = 'block';
+
+  reconsider.classList.add('show');
+  btn.disabled = false;
+}
+
+function reset() {
+  aiPanel.classList.remove('visible');
+  reconsider.classList.remove('show');
+  const adMid = document.getElementById('ad-mid');
+  if (adMid) adMid.style.display = 'none';
+  const errBox = document.getElementById('ai-error-box');
+  if (errBox) errBox.style.display = 'none';
+  qInput.focus();
+}
+
+btn.addEventListener('click', decide);
+reconsider.addEventListener('click', reset);
+qInput.addEventListener('keydown', e => { if (e.key === 'Enter') decide(); });
+</script>
+</body>
+</html>
