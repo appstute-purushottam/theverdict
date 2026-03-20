@@ -453,21 +453,45 @@ export default {
 
     // /api/blog/posts — list all posts
     if (path === '/api/blog/posts') {
-      const raw   = await env.BLOG_KV.get('index');
-      const index = raw ? JSON.parse(raw) : [];
-      return json(index);
+      try {
+        if (!env.BLOG_KV) return json({ error: 'KV store not configured' }, 500);
+        const raw   = await env.BLOG_KV.get('index');
+        const index = raw ? JSON.parse(raw) : [];
+        return json(index);
+      } catch (err) {
+        console.error(`Error fetching blog posts: ${err.message}`);
+        return json({ error: `Failed to fetch posts: ${err.message}` }, 500);
+      }
     }
 
     // /api/blog/post/:slug — single post
     if (path.startsWith('/api/blog/post/')) {
-      const slug  = path.replace('/api/blog/post/', '');
-      const keys  = await env.BLOG_KV.list({ prefix: `post:` });
-      let postRaw = null;
-      for (const k of keys.keys) {
-        if (k.name.endsWith(`:${slug}`)) { postRaw = await env.BLOG_KV.get(k.name); break; }
+      try {
+        const slug  = path.replace('/api/blog/post/', '');
+        if (!slug) return json({ error: 'Missing slug' }, 400);
+        
+        if (!env.BLOG_KV) return json({ error: 'KV store not configured' }, 500);
+        
+        const keys  = await env.BLOG_KV.list({ prefix: `post:` });
+        let postRaw = null;
+        
+        if (keys && keys.keys) {
+          for (const k of keys.keys) {
+            if (k.name.endsWith(`:${slug}`)) { 
+              postRaw = await env.BLOG_KV.get(k.name); 
+              break; 
+            }
+          }
+        }
+        
+        if (!postRaw) return json({ error: 'Post not found' }, 404);
+        
+        const post = JSON.parse(postRaw);
+        return json(post);
+      } catch (err) {
+        console.error(`Error fetching blog post: ${err.message}`);
+        return json({ error: `Failed to fetch post: ${err.message}` }, 500);
       }
-      if (!postRaw) return json({ error: 'Not found' }, 404);
-      return json(JSON.parse(postRaw));
     }
 
 
@@ -481,22 +505,38 @@ export default {
 
     // /rss.xml
     if (path === '/rss.xml') {
-      const rss = await env.BLOG_KV.get('rss');
-      if (rss) return xml(rss);
-      // generate on first hit
-      const raw   = await env.BLOG_KV.get('index');
-      const index = raw ? JSON.parse(raw) : [];
-      const fresh = await buildSitemap(index); // reuse builder shape
-      await generateRSS(index, env);
-      const rss2 = await env.BLOG_KV.get('rss');
-      return xml(rss2 ?? '<?xml version="1.0"?><rss version="2.0"><channel></channel></rss>');
+      try {
+        if (!env.BLOG_KV) {
+          return xml('<?xml version="1.0"?><rss version="2.0"><channel><title>The Verdict</title></channel></rss>');
+        }
+        const rss = await env.BLOG_KV.get('rss');
+        if (rss) return xml(rss);
+        // generate on first hit
+        const raw   = await env.BLOG_KV.get('index');
+        const index = raw ? JSON.parse(raw) : [];
+        await generateRSS(index, env);
+        const rss2 = await env.BLOG_KV.get('rss');
+        return xml(rss2 ?? '<?xml version="1.0"?><rss version="2.0"><channel></channel></rss>');
+      } catch (err) {
+        console.error(`Error generating RSS: ${err.message}`);
+        return xml('<?xml version="1.0"?><rss version="2.0"><channel><title>The Verdict</title><description>Error generating feed</description></channel></rss>', 500);
+      }
     }
 
     // /sitemap.xml — dynamic
     if (path === '/sitemap.xml') {
-      const raw   = await env.BLOG_KV.get('index');
-      const index = raw ? JSON.parse(raw) : [];
-      return xml(await buildSitemap(index));
+      try {
+        if (!env.BLOG_KV) {
+          return xml('<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"></urlset>');
+        }
+        const raw   = await env.BLOG_KV.get('index');
+        const index = raw ? JSON.parse(raw) : [];
+        const sitemap = await buildSitemap(index);
+        return xml(sitemap);
+      } catch (err) {
+        console.error(`Error generating sitemap: ${err.message}`);
+        return xml('<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"></urlset>', 500);
+      }
     }
 
     // /blog/:slug — serve post.html (JS fetches data)
