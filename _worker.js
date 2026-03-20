@@ -266,14 +266,14 @@ async function saveVerdictAsBlogPost(question, options, factors, verdict, env) {
   try {
     if (!env.BLOG_KV) return;
 
-    // Build a URL-safe slug from the question (MUST match handleVerdict slug)
+    // Build a URL-safe slug from the question
     const slug = (question || verdict.verdict || 'verdict')
       .toLowerCase()
       .replace(/[^a-z0-9\s-]/g, '')
       .replace(/\s+/g, '-')
       .replace(/-+/g, '-')
       .slice(0, 60)
-      .replace(/-$/, '');
+      .replace(/-$/, '') + '-' + Date.now().toString(36);
 
     const date = new Date().toISOString().slice(0, 10);
 

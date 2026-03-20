@@ -2,6 +2,10 @@ name                   = "theverdict"
 main                   = "_worker.js"
 compatibility_date     = "2025-03-19"
 
+[assets]
+directory              = "."
+not_found_handling     = "single-page-application"
+
 # KV namespace — blog posts, RSS, index, images
 # Create: Cloudflare Dashboard → Storage & Databases → KV → Create namespace "BLOG_KV"
 [[kv_namespaces]]
