@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<!-- Dynamic meta filled by JS below -->
+<title id="page-title">Loading verdict… | TheVerdict.site</title>
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1"/>
+<link rel="canonical" id="page-canonical" href="https://theverdict.site/blog/"/>
+<link rel="alternate" type="application/rss+xml" title="The Verdict" href="https://theverdict.site/rss.xml"/>
+<meta property="og:site_name" content="The Verdict"/>
+<meta property="og:type" content="article"/>
+<meta id="og-title"       property="og:title" content=""/>
+<meta id="og-desc"        property="og:description" content=""/>
+<meta id="og-url"         property="og:url" content=""/>
+<meta id="twitter-title"  name="twitter:title" content=""/>
+<meta id="twitter-desc"   name="twitter:description" content=""/>
+<meta name="twitter:card" content="summary_large_image"/>
+<script id="ld-article" type="application/ld+json">{}</script>
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --ink: #1a1410; --paper: #f5f0e8; --cream: #ede6d6;
+    --accent: #c0392b; --muted: #9e8f7d; --line: rgba(26,20,16,.13);
+    --ai-bg: #0f1a0f; --ai-border: rgba(92,184,92,.2);
+    --ai-fg: #cde8cd; --ai-green: #5cb85c;
+  }
+  html, body { min-height: 100%; background: var(--paper); color: var(--ink); font-family: 'DM Mono', monospace; }
+  body::before {
+    content: ''; position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='.04'/%3E%3C/svg%3E");
+  }
+  .wrap { position: relative; z-index: 1; max-width: 720px; margin: 0 auto; padding: 48px 24px 80px; }
+
+  nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 56px; padding-bottom: 20px; border-bottom: 1px solid var(--line); }
+  .nav-logo { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; font-style: italic; color: var(--ink); text-decoration: none; }
+  .nav-logo em { color: var(--accent); }
+  .nav-links { display: flex; gap: 24px; }
+  .nav-links a { font-size: 10px; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); text-decoration: none; transition: color .2s; }
+  .nav-links a:hover { color: var(--ink); }
+
+  /* cover image */
+  .cover-img-wrap { width: 100%; aspect-ratio: 16/9; border-radius: 3px; overflow: hidden; margin-bottom: 36px; background: var(--cream); }
+  .cover-img-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .cover-img-generating { width: 100%; aspect-ratio: 16/9; background: linear-gradient(135deg, var(--ai-bg) 0%, #1a2a1a 100%); border-radius: 3px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; margin-bottom: 36px; color: var(--ai-green); font-size: 11px; letter-spacing: .16em; text-transform: uppercase; }
+
+  /* article header */
+  .article-header { margin-bottom: 40px; }
+  .article-meta { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; flex-wrap: wrap; }
+  .cat-badge { font-size: 9px; letter-spacing: .18em; text-transform: uppercase; padding: 4px 10px; border-radius: 10px; background: var(--ink); color: var(--paper); }
+  .article-date { font-size: 10px; color: var(--muted); }
+  .read-time { font-size: 10px; color: var(--muted); }
+  h1.article-title { font-family: 'Playfair Display', serif; font-size: clamp(1.8rem, 5vw, 2.8rem); font-weight: 700; line-height: 1.2; margin-bottom: 18px; }
+  .article-excerpt { font-size: 14px; color: var(--muted); line-height: 1.85; border-left: 3px solid var(--accent); padding-left: 18px; }
+
+  /* verdict hero */
+  .verdict-hero { background: var(--ink); color: var(--paper); border-radius: 3px; padding: 32px 36px; margin: 36px 0; position: relative; overflow: hidden; }
+  .verdict-hero::before { content: '"'; font-family: 'Playfair Display', serif; font-size: 140px; line-height: 1; position: absolute; top: -20px; left: 16px; color: rgba(255,255,255,.05); pointer-events: none; }
+  .verdict-hero-label { font-size: 9px; letter-spacing: .24em; text-transform: uppercase; color: rgba(255,255,255,.4); margin-bottom: 10px; }
+  .verdict-hero-choice { font-family: 'Playfair Display', serif; font-size: clamp(1.6rem, 4vw, 2.4rem); font-weight: 700; font-style: italic; position: relative; z-index: 1; }
+  .verdict-confidence { margin-top: 12px; font-size: 10px; color: rgba(255,255,255,.45); display: flex; align-items: center; gap: 10px; }
+  .conf-bar { height: 3px; width: 120px; background: rgba(255,255,255,.1); border-radius: 2px; overflow: hidden; }
+  .conf-fill { height: 100%; background: var(--ai-green); border-radius: 2px; }
+
+  /* article body */
+  .article-body { font-size: 14px; line-height: 1.9; }
+  .article-body h2 { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; margin: 36px 0 14px; }
+  .article-body h3 { font-family: 'Playfair Display', serif; font-size: 17px; font-weight: 700; font-style: italic; margin: 28px 0 10px; }
+  .article-body p { margin-bottom: 18px; color: rgba(26,20,16,.87); }
+  .article-body ul, .article-body ol { padding-left: 22px; margin-bottom: 18px; }
+  .article-body li { margin-bottom: 8px; color: rgba(26,20,16,.85); }
+  .article-body strong { color: var(--ink); font-weight: 600; }
+  .article-body blockquote { border-left: 3px solid var(--accent); padding: 12px 20px; margin: 24px 0; background: var(--cream); border-radius: 0 2px 2px 0; font-style: italic; color: var(--muted); }
+
+  /* analysis sections */
+  .analysis-box { background: var(--ai-bg); border: 1px solid var(--ai-border); border-radius: 3px; padding: 28px 32px; margin: 32px 0; }
+  .analysis-section { margin-bottom: 22px; }
+  .analysis-section:last-child { margin-bottom: 0; }
+  .analysis-head { font-size: 9px; letter-spacing: .2em; text-transform: uppercase; color: var(--ai-green); margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+  .analysis-body { font-size: 13px; color: var(--ai-fg); line-height: 1.85; }
+  .analysis-body li { padding-left: 16px; position: relative; margin-bottom: 6px; list-style: none; }
+  .analysis-body li::before { content: '→'; position: absolute; left: 0; color: var(--ai-green); font-size: 11px; }
+  .pro { color: var(--ai-green) !important; }
+  .con { color: rgba(192,57,43,.8) !important; }
+
+  /* cmp table */
+  .cmp-table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+  .cmp-table th { font-size: 9px; letter-spacing: .16em; text-transform: uppercase; color: var(--ai-green); padding: 8px 10px; text-align: left; border-bottom: 1px solid var(--ai-border); }
+  .cmp-table td { font-size: 12px; color: var(--ai-fg); padding: 10px 10px; border-bottom: 1px solid rgba(92,184,92,.06); vertical-align: top; line-height: 1.6; }
+  .cmp-table tr.winner td { background: rgba(92,184,92,.06); }
+  .cmp-table tr.winner td:first-child { border-left: 2px solid var(--ai-green); padding-left: 8px; }
+
+  /* next step */
+  .next-step { background: rgba(92,184,92,.07); border-left: 2px solid var(--ai-green); padding: 14px 18px; border-radius: 0 2px 2px 0; font-size: 13px; color: var(--ai-fg); line-height: 1.75; margin-top: 10px; }
+
+  /* share */
+  .share-row { display: flex; gap: 10px; flex-wrap: wrap; margin: 40px 0 32px; align-items: center; }
+  .share-label { font-size: 10px; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); }
+  .share-btn { font-size: 11px; font-family: 'DM Mono', monospace; letter-spacing: .1em; padding: 8px 16px; border-radius: 2px; border: 1.5px solid var(--line); background: none; cursor: pointer; text-decoration: none; color: var(--ink); transition: all .2s; display: inline-flex; align-items: center; gap: 6px; }
+  .share-btn:hover { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+
+  /* CTA */
+  .cta-box { background: var(--cream); border: 1.5px solid rgba(26,20,16,.15); border-radius: 3px; padding: 32px; text-align: center; margin: 40px 0; }
+  .cta-box h3 { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; margin-bottom: 10px; }
+  .cta-box p { font-size: 12px; color: var(--muted); margin-bottom: 20px; }
+  .cta-btn { display: inline-block; background: var(--ink); color: var(--paper); padding: 14px 28px; border-radius: 2px; font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: .18em; text-transform: uppercase; text-decoration: none; transition: background .2s; }
+  .cta-btn:hover { background: #2d2520; }
+
+  /* ad */
+  .ad-unit { width: 100%; text-align: center; margin: 32px 0; }
+  .ad-label { font-size: 9px; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); opacity: .45; margin-bottom: 6px; }
+
+  /* loading */
+  .loading { text-align: center; padding: 80px 0; color: var(--muted); font-size: 13px; }
+
+  footer { margin-top: 64px; padding-top: 24px; border-top: 1px solid var(--line); font-size: 10px; color: var(--muted); letter-spacing: .08em; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  footer a { color: var(--muted); text-decoration: none; }
+
+  @media (max-width: 600px) {
+    .verdict-hero { padding: 24px 20px; }
+    .analysis-box { padding: 20px 18px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav>
+    <a href="/" class="nav-logo">The <em>Verdict</em></a>
+    <div class="nav-links">
+      <a href="/">Tool</a>
+      <a href="/blog/">Blog</a>
+      <a href="/rss.xml">RSS</a>
+    </div>
+  </nav>
+
+  <div id="article-root">
+    <div class="loading">Loading verdict…</div>
+  </div>
+
+  <footer>
+    <span>© 2026 <a href="/">theverdict.site</a></span>
+    <span>AI-reasoned · not random · <a href="/rss.xml">RSS</a></span>
+  </footer>
+</div>
+
+<script>
+const esc = s => String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+function slug() {
+  const parts = location.pathname.replace(/\/+$/,'').split('/');
+  return parts[parts.length - 1];
+}
+
+function setMeta(post) {
+  const title = `${post.title} | TheVerdict.site`;
+  const url   = `https://theverdict.site/blog/${post.slug}/`;
+  document.getElementById('page-title').textContent     = title;
+  document.getElementById('page-canonical').href        = url;
+  document.getElementById('og-title').content           = post.title;
+  document.getElementById('og-desc').content            = post.excerpt;
+  document.getElementById('og-url').content             = url;
+  document.getElementById('twitter-title').content      = post.title;
+  document.getElementById('twitter-desc').content       = post.excerpt;
+  document.querySelector('meta[name="description"]') && (document.querySelector('meta[name="description"]').content = post.excerpt);
+
+  // Article structured data
+    // Set OG image to generated cover
+  if (post.cover_image) {
+    let ogImg = document.querySelector('meta[property="og:image"]');
+    if (!ogImg) { ogImg = document.createElement('meta'); ogImg.setAttribute('property','og:image'); document.head.appendChild(ogImg); }
+    ogImg.content = `https://theverdict.site/api/blog/image/${post.slug}`;
+  }
+  document.getElementById('ld-article').textContent = JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": post.title,
+    "description": post.excerpt,
+    "datePublished": post.date,
+    "dateModified": post.date,
+    "author": { "@type": "Organization", "name": "The Verdict AI", "url": "https://theverdict.site" },
+    "publisher": { "@type": "Organization", "name": "The Verdict", "url": "https://theverdict.site", "logo": { "@type": "ImageObject", "url": "https://theverdict.site/og-image.png" } },
+    "mainEntityOfPage": { "@type": "WebPage", "@id": url },
+    "keywords": post.keywords?.join(', ') ?? post.category,
+    "articleSection": post.category,
+    "url": url
+  });
+}
+
+function renderPost(post) {
+  setMeta(post);
+
+  const conf    = Math.min(100, Math.max(10, parseInt(post.confidence) || 75));
+  const verdict = post.verdict ?? '';
+  const shareText = encodeURIComponent(`The AI verdict on "${post.title}" is: ${verdict} — read the full analysis`);
+  const shareUrl  = encodeURIComponent(`https://theverdict.site/blog/${post.slug}/`);
+
+  const cmpRows = (post.comparison ?? []).map(r => {
+    const isW = (r.option ?? '').toLowerCase() === verdict.toLowerCase();
+    return `<tr class="${isW ? 'winner' : ''}"><td>${esc(r.option)}${isW ? ' ✦' : ''}</td><td>${esc(r.assessment)}</td></tr>`;
+  }).join('');
+
+  const prosHtml = (post.pros ?? []).map(p => `<li class="pro">+ ${esc(p)}</li>`).join('');
+  const consHtml = (post.cons ?? []).map(c => `<li class="con">− ${esc(c)}</li>`).join('');
+
+  document.getElementById('article-root').innerHTML = `
+    <article itemscope itemtype="https://schema.org/Article">
+      <header class="article-header">
+        <div class="article-meta">
+          <span class="cat-badge">${esc(post.category)}</span>
+          <span class="article-date">${new Date(post.date).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})}</span>
+          <span class="read-time">5 min read</span>
+        </div>
+        <h1 class="article-title" itemprop="headline">${esc(post.title)}</h1>
+        <p class="article-excerpt" itemprop="description">${esc(post.excerpt)}</p>
+      </header>
+
+      <!-- Ad: top -->
+      <div class="ad-unit">
+        <p class="ad-label">Advertisement</p>
+        <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="6666666666" data-ad-format="auto" data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});<\/script>
+      </div>
+
+      <!-- Verdict hero -->
+      <div class="verdict-hero">
+        <p class="verdict-hero-label">The AI Verdict</p>
+        <div class="verdict-hero-choice">${esc(verdict)}</div>
+        <div class="verdict-confidence">
+          <span>${conf}% confidence</span>
+          <div class="conf-bar"><div class="conf-fill" style="width:${conf}%"></div></div>
+        </div>
+      </div>
+
+      <!-- Article body -->
+      <div class="article-body" itemprop="articleBody">
+        ${post.article_html ?? `<p>${esc(post.body ?? '')}</p>`}
+      </div>
+
+      <!-- Full AI analysis -->
+      <div class="analysis-box">
+        <div class="analysis-section">
+          <div class="analysis-head">💡 Why This Verdict</div>
+          <div class="analysis-body"><p>${esc(post.reasoning)}</p></div>
+        </div>
+        <div class="analysis-section">
+          <div class="analysis-head">📊 Options Compared</div>
+          <div class="analysis-body">
+            <table class="cmp-table">
+              <thead><tr><th>Option</th><th>Assessment</th></tr></thead>
+              <tbody>${cmpRows}</tbody>
+            </table>
+          </div>
+        </div>
+        <div class="analysis-section">
+          <div class="analysis-head">⚖️ Strengths & Watch-outs</div>
+          <div class="analysis-body">
+            <ul>${prosHtml}${consHtml}</ul>
+          </div>
+        </div>
+        <div class="analysis-section">
+          <div class="analysis-head">🚀 Next Step</div>
+          <div class="next-step">${esc(post.next_step)}</div>
+        </div>
+      </div>
+
+      <!-- Ad: mid -->
+      <div class="ad-unit">
+        <p class="ad-label">Advertisement</p>
+        <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="7777777777" data-ad-format="rectangle" data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});<\/script>
+      </div>
+
+      <!-- Share -->
+      <div class="share-row">
+        <span class="share-label">Share this verdict</span>
+        <a class="share-btn" href="https://twitter.com/intent/tweet?text=${shareText}&url=${shareUrl}" target="_blank" rel="noopener">𝕏 Twitter</a>
+        <a class="share-btn" href="https://www.linkedin.com/sharing/share-offsite/?url=${shareUrl}" target="_blank" rel="noopener">LinkedIn</a>
+        <a class="share-btn" href="https://wa.me/?text=${shareText}%20${shareUrl}" target="_blank" rel="noopener">WhatsApp</a>
+        <button class="share-btn" onclick="navigator.clipboard.writeText(location.href);this.textContent='✓ Copied'">Copy link</button>
+      </div>
+
+      <!-- CTA -->
+      <div class="cta-box">
+        <h3>Make your own verdict</h3>
+        <p>Have a decision to make? Enter your question, options, and factors — the AI will reason through it and give you a justified answer.</p>
+        <a href="/" class="cta-btn">Get the verdict →</a>
+      </div>
+    </article>`;
+}
+
+// Load post
+(async () => {
+  const s = slug();
+  if (!s) { location.href = '/blog/'; return; }
+  try {
+    const res = await fetch(`/api/blog/post/${s}`);
+    if (!res.ok) throw new Error('not found');
+    const post = await res.json();
+    renderPost(post);
+  } catch {
+    document.getElementById('article-root').innerHTML =
+      '<div class="loading"><p>Verdict not found.</p><p style="margin-top:12px"><a href="/blog/" style="color:var(--accent)">← Back to blog</a></p></div>';
+  }
+})();
+</script>
+</body>
+</html>

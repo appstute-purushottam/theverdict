@@ -1,3 +1,5 @@
 _worker.js
 wrangler.toml
 .assetsignore
+wrangler.toml
+.assetsignore

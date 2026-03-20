@@ -1,7 +1,22 @@
-name = "theverdict"
-main = "_worker.js"
-compatibility_date = "2025-03-19"
+name                   = "theverdict"
+main                   = "_worker.js"
+compatibility_date     = "2025-03-19"
 
 [assets]
-directory = "."
-not_found_handling = "single-page-application"
+directory              = "."
+not_found_handling     = "single-page-application"
+
+# KV namespace — blog posts, RSS, index, images
+# Create: Cloudflare Dashboard → Storage & Databases → KV → Create namespace "BLOG_KV"
+[[kv_namespaces]]
+binding                = "BLOG_KV"
+id                     = "f537ea7c4c9848a09e88fa1d93cc558b"
+
+# Workers AI binding — FLUX image generation (free tier: 10k neurons/day)
+# No setup needed — just add the binding below
+[ai]
+binding                = "AI"
+
+# Daily cron — generates post + cover image every day at 08:00 UTC
+[triggers]
+crons                  = ["0 8 * * *"]
