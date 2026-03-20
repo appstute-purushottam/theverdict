@@ -41,11 +41,6 @@
   .nav-links a { font-size: 10px; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); text-decoration: none; transition: color .2s; }
   .nav-links a:hover { color: var(--ink); }
 
-  /* cover image */
-  .cover-img-wrap { width: 100%; aspect-ratio: 16/9; border-radius: 3px; overflow: hidden; margin-bottom: 36px; background: var(--cream); }
-  .cover-img-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .cover-img-generating { width: 100%; aspect-ratio: 16/9; background: linear-gradient(135deg, var(--ai-bg) 0%, #1a2a1a 100%); border-radius: 3px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; margin-bottom: 36px; color: var(--ai-green); font-size: 11px; letter-spacing: .16em; text-transform: uppercase; }
-
   /* article header */
   .article-header { margin-bottom: 40px; }
   .article-meta { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; flex-wrap: wrap; }
@@ -166,13 +161,7 @@ function setMeta(post) {
   document.querySelector('meta[name="description"]') && (document.querySelector('meta[name="description"]').content = post.excerpt);
 
   // Article structured data
-    // Set OG image to generated cover
-  if (post.cover_image) {
-    let ogImg = document.querySelector('meta[property="og:image"]');
-    if (!ogImg) { ogImg = document.createElement('meta'); ogImg.setAttribute('property','og:image'); document.head.appendChild(ogImg); }
-    ogImg.content = `https://theverdict.site/api/blog/image/${post.slug}`;
-  }
-  document.getElementById('ld-article').textContent = JSON.stringify({
+    document.getElementById('ld-article').textContent = JSON.stringify({
     "@context": "https://schema.org",
     "@type": "Article",
     "headline": post.title,

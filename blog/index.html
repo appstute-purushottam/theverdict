@@ -78,10 +78,6 @@
   .post-card.featured .post-card-title { font-size: 26px; }
   .post-card.featured .featured-badge { font-size: 9px; letter-spacing: .2em; text-transform: uppercase; color: var(--accent); margin-bottom: 8px; }
 
-  /* cover image */
-  .post-cover { width: 100%; aspect-ratio: 16/9; object-fit: cover; border-radius: 2px; margin-bottom: 18px; background: var(--cream); display: block; }
-  .post-cover-placeholder { width: 100%; aspect-ratio: 16/9; background: linear-gradient(135deg, var(--cream) 0%, rgba(26,20,16,.08) 100%); border-radius: 2px; margin-bottom: 18px; display: flex; align-items: center; justify-content: center; font-size: 28px; }
-
   /* loading / empty */
   .loading { text-align: center; padding: 80px 0; color: var(--muted); font-size: 12px; letter-spacing: .1em; }
   .loading-dots span { animation: dot-pulse 1.2s ease-in-out infinite; display: inline-block; }
@@ -201,14 +197,9 @@ function renderPosts(posts, page) {
 
   container.innerHTML = slice.map((post, i) => {
     const featured = i === 0 && page === 1 && currentCat === 'all';
-    const imgHtml = post.has_image
-      ? `<img class="post-cover" src="/api/blog/image/${post.slug}" alt="${post.title}" loading="lazy"/>`
-      : `<div class="post-cover-placeholder">${{career:'💼',money:'💰',tech:'💻',lifestyle:'🌿',travel:'✈️',relationships:'❤️'}[post.category] ?? '✦'}</div>`;
-
     return `
     <a href="/blog/${post.slug}/" class="post-card${featured ? ' featured' : ''}" aria-label="${post.title}">
       ${featured ? '<div><p class="featured-badge">✦ Today\'s Featured Verdict</p>' : '<div>'}
-      ${imgHtml}
       <div class="post-card-meta">
         <span class="post-category">${post.category}</span>
         <span class="post-date">${formatDate(post.date)}</span>

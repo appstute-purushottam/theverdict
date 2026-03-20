@@ -1,11 +1,10 @@
 /**
  * The Verdict — _worker.js
- * Handles: /api/verdict, /api/blog/*, /rss.xml, /sitemap.xml, /api/blog/image/:slug
- * + Cron trigger: daily blog post generation + image at 08:00 UTC
+ * Handles: /api/verdict, /api/blog/*, /rss.xml, /sitemap.xml
+ * + Cron trigger: daily blog post generation at 08:00 UTC
  *
  * Bindings required (wrangler.toml / Pages Settings → Functions):
  *   KV:  BLOG_KV   — stores posts, index, RSS, images
- *   AI:  AI        — Cloudflare Workers AI (for FLUX image generation)
  *
  * Secrets required:
  *   ANTHROPIC_API_KEY  — your Anthropic key
@@ -15,8 +14,6 @@
  *   binding = "BLOG_KV"
  *   id = "YOUR_KV_NAMESPACE_ID"
  *
- *   [ai]
- *   binding = "AI"
  */
 
 const CORS = {
@@ -70,7 +67,7 @@ async function callAnthropic(prompt, apiKey, maxTokens = 1200) {
 }
 
 // ── Generate blog post via AI ──────────────────────────────────
-async function generateBlogPost(topic, apiKey, date, ai = null) {
+async function generateBlogPost(topic, apiKey, date) {
   const optList = topic.options.map((o, i) => `${i + 1}. ${o}`).join('\n');
 
   // Step 1: get verdict JSON
@@ -155,21 +152,10 @@ Respond ONLY with valid JSON (no fences):
     .slice(0, 60)
     .replace(/-$/, '');
 
-  // Step 4: generate cover image via Workers AI FLUX
-  let cover_image_b64 = null;
-  try {
-    if (ai) {
-      cover_image_b64 = await generateCoverImage(article.title, topic.category, verdict.verdict, ai);
-    }
-  } catch (imgErr) {
-    console.error('Image generation failed:', imgErr.message);
-  }
-
   return {
     slug,
     date,
     category:    topic.category,
-    cover_image: cover_image_b64 ? `data:image/png;base64,${cover_image_b64}` : null,
     question:    topic.question,
     title:       article.title,
     excerpt:     article.excerpt,
@@ -197,7 +183,7 @@ async function handleCron(env) {
   const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0)) / 86400000);
   const topic     = TOPIC_SEEDS[dayOfYear % TOPIC_SEEDS.length];
 
-  const post = await generateBlogPost(topic, env.ANTHROPIC_API_KEY, today, env.AI);
+  const post = await generateBlogPost(topic, env.ANTHROPIC_API_KEY, today);
 
   // Save post to KV
   await env.BLOG_KV.put(`post:${today}:${post.slug}`, JSON.stringify(post), { expirationTtl: 60 * 60 * 24 * 365 });
@@ -205,7 +191,7 @@ async function handleCron(env) {
   // Update index list
   const indexRaw = await env.BLOG_KV.get('index');
   const index    = indexRaw ? JSON.parse(indexRaw) : [];
-  index.unshift({ slug: post.slug, date: post.date, title: post.title, excerpt: post.excerpt, category: post.category, verdict: post.verdict, has_image: !!post.cover_image });
+  index.unshift({ slug: post.slug, date: post.date, title: post.title, excerpt: post.excerpt, category: post.category, verdict: post.verdict });
   if (index.length > 365) index.pop(); // keep 1 year
   await env.BLOG_KV.put('index', JSON.stringify(index));
 
@@ -276,6 +262,107 @@ async function buildSitemap(index) {
 </urlset>`;
 }
 
+// ── Save verdict as blog post (background, non-blocking) ────────
+async function saveVerdictAsBlogPost(question, options, factors, verdict, env) {
+  try {
+    if (!env.BLOG_KV) return;
+
+    // Build a URL-safe slug from the question
+    const slug = (question || verdict.verdict || 'verdict')
+      .toLowerCase()
+      .replace(/[^a-z0-9\s-]/g, '')
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-')
+      .slice(0, 60)
+      .replace(/-$/, '') + '-' + Date.now().toString(36);
+
+    const date = new Date().toISOString().slice(0, 10);
+
+    // Derive a readable title and excerpt from the question + verdict
+    const title   = question
+      ? `${question.slice(0, 80).replace(/\?$/, '')}? — The Verdict`
+      : `AI Decision: ${verdict.verdict}`;
+    const excerpt = `AI verdict: ${verdict.verdict}. ${verdict.reasoning ? verdict.reasoning.slice(0, 120) + '…' : ''}`;
+
+    // Detect category from question keywords
+    const q = (question || '').toLowerCase();
+    const category =
+      /job|career|salary|work|hire|promote|resign|freelance|startup/.test(q) ? 'career' :
+      /invest|money|budget|debt|saving|stock|crypto|bitcoin|fund|rent|buy/.test(q) ? 'money' :
+      /framework|code|software|app|tech|ai|tool|language|dev|cloud/.test(q) ? 'tech' :
+      /travel|visit|trip|city|country|hotel|flight/.test(q) ? 'travel' :
+      /relationship|partner|marriage|dating|family|friend/.test(q) ? 'relationships' :
+      'lifestyle';
+
+    // Build simple article HTML from verdict data
+    const optList = options.map(o => `<li>${o}</li>`).join('');
+    const prosHtml = (verdict.pros || []).map(p => `<li>${p}</li>`).join('');
+    const consHtml = (verdict.cons || []).map(c => `<li>${c}</li>`).join('');
+    const cmpRows  = (verdict.comparison || []).map(r =>
+      `<tr><td><strong>${r.option}</strong></td><td>${r.assessment}</td></tr>`
+    ).join('');
+
+    const article_html = `
+<h2>The Decision</h2>
+<p>${question || 'A real-world decision was submitted to our AI decision engine.'}</p>
+<p><strong>Options considered:</strong></p>
+<ul>${optList}</ul>
+${factors ? `<p><strong>Key factors:</strong> ${factors}</p>` : ''}
+
+<h2>Why ${verdict.verdict} Wins</h2>
+<p>${verdict.reasoning || ''}</p>
+
+<h2>Full Analysis</h2>
+<table style="width:100%;border-collapse:collapse">
+  <thead><tr><th style="text-align:left;padding:6px 8px">Option</th><th style="text-align:left;padding:6px 8px">Assessment</th></tr></thead>
+  <tbody>${cmpRows}</tbody>
+</table>
+
+<h2>Strengths &amp; Watch-outs</h2>
+${prosHtml ? `<p><strong>Strengths:</strong></p><ul>${prosHtml}</ul>` : ''}
+${consHtml ? `<p><strong>Watch-outs:</strong></p><ul>${consHtml}</ul>` : ''}
+
+<blockquote>${verdict.next_step || ''}</blockquote>
+<p><em>${verdict.caveat || ''}</em></p>`;
+
+    const post = {
+      slug, date, category, title, excerpt,
+      question, options, factors,
+      article_html,
+      verdict:    verdict.verdict,
+      confidence: verdict.confidence,
+      reasoning:  verdict.reasoning,
+      comparison: verdict.comparison,
+      pros:       verdict.pros,
+      cons:       verdict.cons,
+      next_step:  verdict.next_step,
+      caveat:     verdict.caveat,
+      source:     'user',   // marks as user-submitted, not daily cron
+    };
+
+    // Save post
+    await env.BLOG_KV.put(`post:${date}:${slug}`, JSON.stringify(post), {
+      expirationTtl: 60 * 60 * 24 * 365,
+    });
+
+    // Update index
+    const indexRaw = await env.BLOG_KV.get('index');
+    const index    = indexRaw ? JSON.parse(indexRaw) : [];
+    index.unshift({ slug, date, title, excerpt, category, verdict: verdict.verdict });
+    if (index.length > 1000) index.pop();
+    await env.BLOG_KV.put('index', JSON.stringify(index));
+
+    // Invalidate RSS so it regenerates fresh next hit
+    await env.BLOG_KV.delete('rss');
+
+    return slug;
+  } catch (e) {
+    // Never let blog saving crash the verdict response
+    console.error('saveVerdictAsBlogPost failed:', e.message);
+    return null;
+  }
+}
+
 // ── Verdict API ────────────────────────────────────────────────
 async function handleVerdict(request, env) {
   if (request.method === 'OPTIONS') return new Response(null, { status: 200, headers: CORS });
@@ -313,7 +400,17 @@ Rules: verdict must exactly match one of the listed options. Be specific to this
   try {
     const raw    = await callAnthropic(prompt, env.ANTHROPIC_API_KEY);
     const parsed = JSON.parse(raw);
-    return json(parsed, 200);
+
+    // Save as blog post in the background — does NOT delay the verdict response
+    if (env.BLOG_KV && question) {
+      env.BLOG_KV && saveVerdictAsBlogPost(question, options, factors, parsed, env);
+    }
+
+    // Return slug so frontend can optionally link to the blog post
+    const slug = (question || parsed.verdict || '')
+      .toLowerCase().replace(/[^a-z0-9\s-]/g,'').replace(/\s+/g,'-').slice(0,60);
+    return json({ ...parsed, blog_slug: slug }, 200);
+
   } catch (err) {
     return json({ error: err.message }, 502);
   }
@@ -374,31 +471,6 @@ export default {
       return json(JSON.parse(postRaw));
     }
 
-    // /api/blog/image/:slug — serve generated cover image
-    if (path.startsWith('/api/blog/image/')) {
-      const slug    = path.replace('/api/blog/image/', '');
-      const keys    = await env.BLOG_KV.list({ prefix: 'post:' });
-      let   postRaw = null;
-      for (const k of keys.keys) {
-        if (k.name.endsWith(`:${slug}`)) { postRaw = await env.BLOG_KV.get(k.name); break; }
-      }
-      if (!postRaw) return new Response('Not found', { status: 404 });
-      const post = JSON.parse(postRaw);
-      if (!post.cover_image) return new Response('No image', { status: 404 });
-
-      // Strip data URI prefix and return raw PNG
-      const base64 = post.cover_image.replace('data:image/png;base64,', '');
-      const binary  = atob(base64);
-      const bytes   = new Uint8Array(binary.length);
-      for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
-      return new Response(bytes, {
-        headers: {
-          'Content-Type':  'image/png',
-          'Cache-Control': 'public, max-age=31536000, immutable',
-          ...CORS,
-        },
-      });
-    }
 
     // /api/blog/generate — manual trigger (GET, for testing)
     if (path === '/api/blog/generate' && request.method === 'GET') {

@@ -261,6 +261,33 @@
   /* bottom ad — shown after verdict */
   .ad-bottom { margin-top: 32px; }
 
+  /* ── site nav ── */
+  .site-nav { margin-bottom: 20px; }
+  .nav-blog-link {
+    font-size: 10px; letter-spacing: .18em; text-transform: uppercase;
+    color: var(--muted); text-decoration: none;
+    border: 1px solid var(--line); border-radius: 20px; padding: 5px 14px;
+    transition: all .2s; display: inline-flex; align-items: center; gap: 6px;
+  }
+  .nav-blog-link:hover { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+
+  /* ── blog post link after verdict ── */
+  #blog-post-link {
+    display: none; width: 100%; max-width: 580px;
+    margin-top: 14px;
+    background: var(--cream); border: 1.5px solid rgba(26,20,16,.15);
+    border-radius: 2px; padding: 14px 20px;
+    font-size: 12px; color: var(--muted);
+    display: none; align-items: center; justify-content: space-between; gap: 12px;
+  }
+  #blog-post-link.show { display: flex; }
+  #blog-post-link a {
+    font-size: 10px; letter-spacing: .14em; text-transform: uppercase;
+    color: var(--accent); text-decoration: none; white-space: nowrap;
+    font-family: "DM Mono", monospace;
+  }
+  #blog-post-link a:hover { text-decoration: underline; }
+
   @media (max-width: 600px) {
     .card { padding: 28px 20px; }
     .pc-grid { grid-template-columns: 1fr; }
@@ -273,6 +300,9 @@
 <div class="wrap">
 
   <header role="banner">
+    <nav class="site-nav" aria-label="Site navigation">
+      <a href="/blog/" class="nav-blog-link">📖 Blog &amp; Verdicts →</a>
+    </nav>
     <p class="eyebrow">intelligent decision analysis</p>
     <h1>The <em>Verdict</em></h1>
     <p class="subtitle">Describe your situation. List your options.<br><strong>The AI weighs the factors and decides.</strong></p>
@@ -449,6 +479,12 @@
 
       <button id="reconsider" aria-label="Start a new decision">Reconsider →</button>
 
+      <!-- Blog post link — shown after verdict -->
+      <div id="blog-post-link" role="status">
+        <span>✦ This verdict has been saved as a public blog post</span>
+        <a id="blog-post-anchor" href="/blog/" target="_blank">Read on blog →</a>
+      </div>
+
     </section>
 
 
@@ -494,15 +530,8 @@ const aiPanel     = document.getElementById('ai-panel');
 const thinkBox    = document.getElementById('thinking-box');
 const resultPanel = document.getElementById('result-panel');
 const steps       = [1,2,3,4].map(i => document.getElementById(`step-${i}`));
-
-// Social sharing buttons
-const shareRow = document.getElementById('share-row');
-const shareBtns = {
-  twitter: document.getElementById('share-twitter'),
-  linkedin: document.getElementById('share-linkedin'),
-  facebook: document.getElementById('share-facebook'),
-  copy: document.getElementById('share-copy')
-};
+const blogLink    = document.getElementById('blog-post-link');
+const blogAnchor  = document.getElementById('blog-post-anchor');
 
 // ── Thinking step animator ───────────────────────────────────
 const stepIcons = ['📋','⚖️','🔍','✦'];
@@ -596,19 +625,6 @@ function renderResult(data, options) {
 
   // Caveat
   document.getElementById('text-caveat').textContent = data.caveat ?? '';
-
-  // Show sharing row and set up share links
-  shareRow.style.display = 'block';
-  const shareText = encodeURIComponent(`My AI-powered verdict: "${data.verdict}" — ${data.reasoning}`);
-  const shareUrl = encodeURIComponent(window.location.origin + window.location.pathname + '#verdict');
-  shareBtns.twitter.onclick = () => window.open(`https://twitter.com/intent/tweet?text=${shareText}&url=${shareUrl}`,'_blank');
-  shareBtns.linkedin.onclick = () => window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${shareUrl}`,'_blank');
-  shareBtns.facebook.onclick = () => window.open(`https://www.facebook.com/sharer/sharer.php?u=${shareUrl}`,'_blank');
-  shareBtns.copy.onclick = () => {
-    navigator.clipboard.writeText(window.location.origin + window.location.pathname + '#verdict');
-    shareBtns.copy.textContent = '✅';
-    setTimeout(()=>{ shareBtns.copy.textContent = '🔗'; }, 1200);
-  };
 }
 
 // ── Call Worker (secure Anthropic proxy) ─────────────────────
@@ -680,6 +696,13 @@ async function decide() {
   const adMid = document.getElementById('ad-mid');
   if (adMid) adMid.style.display = 'block';
 
+  // Show blog post link
+  if (blogLink && blogAnchor && !data._error) {
+    const slug = data.blog_slug || q.toLowerCase().replace(/[^a-z0-9\s-]/g,'').replace(/\s+/g,'-').slice(0,60);
+    blogAnchor.href = `/blog/${slug}/`;
+    blogLink.classList.add('show');
+  }
+
   reconsider.classList.add('show');
   btn.disabled = false;
 }
@@ -689,6 +712,7 @@ function reset() {
   reconsider.classList.remove('show');
   const adMid = document.getElementById('ad-mid');
   if (adMid) adMid.style.display = 'none';
+  if (blogLink) blogLink.classList.remove('show');
   const errBox = document.getElementById('ai-error-box');
   if (errBox) errBox.style.display = 'none';
   qInput.focus();
