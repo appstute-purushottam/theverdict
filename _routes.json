@@ -1,0 +1,10 @@
+    {
+  "version": 1,
+  "include": [
+    "/api/*",
+    "/blog/*",
+    "/rss.xml",
+    "/sitemap.xml"
+  ],
+  "exclude": []
+}
