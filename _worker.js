@@ -273,7 +273,7 @@ async function saveVerdictAsBlogPost(question, options, factors, verdict, env) {
       .replace(/\s+/g, '-')
       .replace(/-+/g, '-')
       .slice(0, 60)
-      .replace(/-$/, '') + '-' + Date.now().toString(36);
+      .replace(/-$/, '');
 
     const date = new Date().toISOString().slice(0, 10);
 
@@ -401,14 +401,12 @@ Rules: verdict must exactly match one of the listed options. Be specific to this
     const parsed = JSON.parse(raw);
 
     // Save as blog post in the background — does NOT delay the verdict response
+    let blogSlug = null;
     if (env.BLOG_KV && question) {
-      env.BLOG_KV && saveVerdictAsBlogPost(question, options, factors, parsed, env);
+      blogSlug = await saveVerdictAsBlogPost(question, options, factors, parsed, env);
     }
 
-    // Return slug so frontend can optionally link to the blog post
-    const slug = (question || parsed.verdict || '')
-      .toLowerCase().replace(/[^a-z0-9\s-]/g,'').replace(/\s+/g,'-').slice(0,60);
-    return json({ ...parsed, blog_slug: slug }, 200);
+    return json({ ...parsed, blog_slug: blogSlug }, 200);
 
   } catch (err) {
     return json({ error: err.message }, 502);
@@ -444,6 +442,8 @@ export default {
   async fetch(request, env) {
     const url  = new URL(request.url);
     const path = url.pathname.replace(/\/$/, '') || '/';
+
+    console.log(`[Worker] ${request.method} ${path}`);
 
     // CORS preflight
     if (request.method === 'OPTIONS') return new Response(null, { status: 200, headers: CORS });
@@ -539,14 +539,19 @@ export default {
       }
     }
 
-    // /blog/:slug — serve post.html (JS fetches data)
-    if (path.startsWith('/blog/') && path !== '/blog') {
-      const postHtml = await env.ASSETS.fetch(new Request(`${url.origin}/blog/post.html`));
-      return postHtml;
-    }
+    // /blog/:slug — handled by ASSETS with SPA fallback (not in Worker routes)
+    // All static files including /blog/* are served by ASSETS
 
-    // All other routes — serve static assets
-    return env.ASSETS.fetch(request);
+    // All other routes — serve static assets via ASSETS
+    try {
+      console.log(`[ASSETS] Fetching ${path}`);
+      const response = await env.ASSETS.fetch(request);
+      console.log(`[ASSETS] Response: ${response.status} for ${path}`);
+      return response;
+    } catch (err) {
+      console.error(`Error serving asset ${path}: ${err.message}`);
+      return html(`<html><body><h1>Error</h1><p>Failed to serve: ${err.message}</p></body></html>`, 500);
+    }
   },
 
   // Cron trigger — runs daily at 08:00 UTC
