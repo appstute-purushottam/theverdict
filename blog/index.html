@@ -30,6 +30,24 @@
     --accent: #c0392b; --muted: #9e8f7d; --line: rgba(26,20,16,.13);
     --ai-bg: #0f1a0f; --ai-green: #5cb85c;
   }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --ink: #e8e0d8; --paper: #0f0b08; --cream: #1a140f;
+      --accent: #ff6b5b; --muted: #8b7d6d; --line: rgba(232,224,216,.13);
+      --ai-bg: #0f1a0f; --ai-green: #5cb85c;
+    }
+  }
+
+  html[data-theme="dark"] {
+    --ink: #e8e0d8; --paper: #0f0b08; --cream: #1a140f;
+    --accent: #ff6b5b; --muted: #8b7d6d; --line: rgba(232,224,216,.13);
+  }
+
+  html[data-theme="light"] {
+    --ink: #1a1410; --paper: #f5f0e8; --cream: #ede6d6;
+    --accent: #c0392b; --muted: #9e8f7d; --line: rgba(26,20,16,.13);
+  }
   html, body { min-height: 100%; background: var(--paper); color: var(--ink); font-family: 'DM Mono', monospace; }
   body::before {
     content: ''; position: fixed; inset: 0; z-index: 0; pointer-events: none;
@@ -99,14 +117,28 @@
   footer a { color: var(--muted); text-decoration: none; }
   footer a:hover { color: var(--ink); }
 
+  /* ── Theme toggle button ── */
+  .theme-toggle {
+    position: fixed; top: 24px; right: 24px; z-index: 100;
+    background: var(--cream); border: 1.5px solid var(--line);
+    border-radius: 20px; padding: 6px 10px;
+    font-size: 16px; cursor: pointer; transition: all .2s;
+    display: flex; align-items: center; justify-content: center;
+    width: 40px; height: 40px;
+  }
+  .theme-toggle:hover { background: var(--ink); color: var(--cream); border-color: var(--ink); }
+
   @media (max-width: 640px) {
     .posts-grid { grid-template-columns: 1fr; }
     .post-card.featured { grid-template-columns: 1fr; }
     nav { flex-direction: column; gap: 16px; align-items: flex-start; }
+    .theme-toggle { top: 16px; right: 16px; width: 36px; height: 36px; }
   }
 </style>
 </head>
 <body>
+<button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode" title="Toggle dark mode">🌙</button>
+
 <div class="wrap">
   <nav>
     <a href="/" class="nav-logo">The <em>Verdict</em></a>
@@ -251,6 +283,34 @@ document.getElementById('filters').addEventListener('click', e => {
   }
   renderPosts(allPosts, 1);
 })();
+
+// ── Theme toggle ────────────────────────────────────────────────
+const themeToggle = document.getElementById('theme-toggle');
+const html = document.documentElement;
+
+function initTheme() {
+  const saved = localStorage.getItem('theme');
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const isDark = saved ? saved === 'dark' : prefersDark;
+  
+  if (isDark) {
+    html.setAttribute('data-theme', 'dark');
+    themeToggle.textContent = '☀️';
+  } else {
+    html.setAttribute('data-theme', 'light');
+    themeToggle.textContent = '🌙';
+  }
+}
+
+themeToggle.addEventListener('click', () => {
+  const current = html.getAttribute('data-theme');
+  const newTheme = current === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', newTheme);
+  localStorage.setItem('theme', newTheme);
+  themeToggle.textContent = newTheme === 'dark' ? '☀️' : '🌙';
+});
+
+initTheme();
 </script>
 </body>
 </html>
