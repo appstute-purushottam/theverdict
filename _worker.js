@@ -54,7 +54,7 @@ async function callAnthropic(prompt, apiKey, maxTokens = 1200) {
       'anthropic-version': '2023-06-01',
     },
     body: JSON.stringify({
-      model:      'claude-sonnet-4-5',
+      model:      'claude-1',
       max_tokens: maxTokens,
       messages:   [{ role: 'user', content: prompt }],
     }),

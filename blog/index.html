@@ -134,6 +134,15 @@
     nav { flex-direction: column; gap: 16px; align-items: flex-start; }
     .theme-toggle { top: 16px; right: 16px; width: 36px; height: 36px; }
   }
+
+  /* Desktop zoom to 150% */
+  @media (min-width: 641px) {
+    html {
+      zoom: 1.5;
+      -moz-transform: scale(1.5);
+      -moz-transform-origin: 0 0;
+    }
+  }
 </style>
 </head>
 <body>
