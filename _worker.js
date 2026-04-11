@@ -673,7 +673,7 @@ async function callAnthropic(prompt, apiKey, maxTokens = 1200) {
       'anthropic-version': '2023-06-01',
     },
     body: JSON.stringify({
-      model:      'claude-opus-4-64k', // cheaper than 100k context models, still very good at reasoning and long outputs
+      model: 'claude-haiku-4-5-20251001', // ~10x cheaper, still very capable for blog posts
       max_tokens: maxTokens,
       messages:   [{ role: 'user', content: prompt }],
     }),
