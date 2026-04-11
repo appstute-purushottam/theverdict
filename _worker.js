@@ -584,8 +584,7 @@ function renderPost(post) {
 `;
 
 
-// ── Daily topic seeds ──────────────────────────────────────────
-// AI picks one each day based on the date
+// ── Daily topic seeds — Gen Z & 2026 viral topics ────────────
 // 60 topics across 6 categories — rotates daily, never repeats for 2 months
 const TOPIC_SEEDS = [
 
@@ -661,7 +660,6 @@ const TOPIC_SEEDS = [
   { category: 'relationships', question: 'Long distance relationship in 2026 — is it actually viable with video calls and cheap flights?', options: ['Yes — technology and travel make it work', 'No — physical presence is non-negotiable long term', 'Only with a concrete end date and shared goal'], factors: 'Video call intimacy limitations, touch deprivation research, trust maintenance, timeline to close gap, financial cost, timezone stress' },
   { category: 'relationships', question: 'Should you discuss body count with a new partner or keep that information private?', options: ['Discuss it — radical honesty builds trust', 'Keep private — irrelevant to present relationship', 'Only if they directly ask, and answer honestly'], factors: 'Jealousy triggers, double standards by gender, STI conversation link, judgement risk, sexual shame, relationship security' },
 ];
-
 
 // ── Call Anthropic ─────────────────────────────────────────────
 async function callAnthropic(prompt, apiKey, maxTokens = 1200) {
@@ -892,7 +890,7 @@ async function saveVerdictAsBlogPost(question, options, factors, verdict, env) {
       .replace(/\s+/g, '-')
       .replace(/-+/g, '-')
       .slice(0, 60)
-      .replace(/-$/, '') + '-' + Date.now().toString(36);
+      .replace(/-$/, '');
 
     const date = new Date().toISOString().slice(0, 10);
 
@@ -1026,7 +1024,12 @@ Rules: verdict must exactly match one of the listed options. Be specific to this
 
     // Return slug so frontend can optionally link to the blog post
     const slug = (question || parsed.verdict || '')
-      .toLowerCase().replace(/[^a-z0-9\s-]/g,'').replace(/\s+/g,'-').slice(0,60);
+      .toLowerCase()
+      .replace(/[^a-z0-9\s-]/g, '')
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-')
+      .slice(0, 60)
+      .replace(/-$/, '');
     return json({ ...parsed, blog_slug: slug }, 200);
 
   } catch (err) {
@@ -1082,8 +1085,13 @@ export default {
       const slug  = path.replace('/api/blog/post/', '');
       const keys  = await env.BLOG_KV.list({ prefix: `post:` });
       let postRaw = null;
+      // Match: exact end, or slug is a prefix of the stored slug (handles timestamp suffix)
       for (const k of keys.keys) {
-        if (k.name.endsWith(`:${slug}`)) { postRaw = await env.BLOG_KV.get(k.name); break; }
+        const kSlug = k.name.split(':').pop();
+        if (kSlug === slug || kSlug.startsWith(slug) || kSlug.includes(slug)) {
+          postRaw = await env.BLOG_KV.get(k.name);
+          break;
+        }
       }
       if (!postRaw) return json({ error: 'Not found' }, 404);
       return json(JSON.parse(postRaw));
